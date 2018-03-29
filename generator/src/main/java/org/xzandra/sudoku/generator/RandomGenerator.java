@@ -12,7 +12,7 @@ public final class RandomGenerator {
     private RandomGenerator() {
     }
 
-    public static int getIndex(int upperBound) {
+    public static int getIndex(final int upperBound) {
         return random.ints(MIN_INDEX, upperBound)
                      .limit(1)
                      .findFirst()

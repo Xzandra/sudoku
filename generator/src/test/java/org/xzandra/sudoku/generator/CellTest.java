@@ -1,6 +1,7 @@
 package org.xzandra.sudoku.generator;
 
 import org.junit.jupiter.api.Test;
+import org.xzandra.sudoku.generator.model.Cell;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,21 +11,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CellTest {
     @Test
     void cellInitialization() {
-        Cell cell = new Cell(1, 2);
+        Cell cell = new Cell(1);
         assertEquals(0, cell.getValue());
-        assertEquals(1, cell.getRow());
-        assertEquals(2, cell.getColumn());
+        assertEquals(0, cell.getRow());
+        assertEquals(1, cell.getColumn());
+        assertEquals(0, cell.getSquare());
     }
 
     @Test
     void hasAvailableValues() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         assertTrue(cell.hasAvailableValues());
     }
 
     @Test
     void getRandomAvailableValue() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         assertEquals(0, cell.getValue());
         final int randomAvailableValue = cell.getRandomAvailableValue();
         assertNotEquals(0, randomAvailableValue);
@@ -32,7 +34,7 @@ class CellTest {
 
     @Test
     void setValidValue() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         cell.setValue(5);
         assertEquals(5, cell.getValue());
         assertFalse(cell.isValidValue(5));
@@ -40,7 +42,7 @@ class CellTest {
 
     @Test
     void setInvalidValue() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         cell.setValue(1);
         cell.setValue(5);
         assertEquals(5, cell.getValue());
@@ -50,13 +52,13 @@ class CellTest {
 
     @Test
     void isValidValue() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         assertTrue(cell.isValidValue(5));
     }
 
     @Test
     void isInvalidValue() {
-        Cell cell = new Cell(1, 1);
+        Cell cell = new Cell(1);
         cell.setValue(5);
         assertFalse(cell.isValidValue(cell.getValue()));
     }

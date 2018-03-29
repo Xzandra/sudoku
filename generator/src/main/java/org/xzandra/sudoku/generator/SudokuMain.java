@@ -5,8 +5,11 @@ package org.xzandra.sudoku.generator;
  */
 public class SudokuMain {
     public static void main(String[] args) {
-        Grid grid = new Grid();
-
-        System.out.println(grid.toString());
+        final GridGenerator gridGenerator = new GridGenerator();
+        try {
+            gridGenerator.generate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
