@@ -1,0 +1,20 @@
+# Log file
+*.log
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+#Intellij
+.idea
+*.iml
+
+#Gradle
+.gradle
+
+/target/
+/out/
