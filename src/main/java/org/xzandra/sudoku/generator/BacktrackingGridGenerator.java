@@ -1,59 +1,60 @@
 package org.xzandra.sudoku.generator;
 
-import org.xzandra.sudoku.generator.model.Cell;
-import org.xzandra.sudoku.generator.model.Grid;
-
-import static org.xzandra.sudoku.generator.SudokuUtils.TOTAL_CELL_SIZE;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.xzandra.sudoku.GridUtils;
 
 /**
- * Generator of the sudoku grid.
+ * Generator of the sudoku grid: backtracking algorithm.
  */
-public class GridGenerator {
+public class BacktrackingGridGenerator {
+    private static final Logger logger = LogManager.getLogger(BacktrackingGridGenerator.class);
+
     public Grid generate() throws Exception {
         final Grid grid = new Grid();
-        System.out.println("Starting grid initialization");
+
+        logger.info("Grid {} generation started", grid.getId());
 
         int cellIndex = 0;
-        while (cellIndex < TOTAL_CELL_SIZE) {
+        while (cellIndex < GridUtils.TOTAL_CELL_SIZE) {
             final boolean cellValueSet = setCellValue(cellIndex, grid);
             if (!cellValueSet) {
                 grid.getCell(cellIndex--)
                     .reset();
-                System.out.println("Going back to cell(" + cellIndex + ")");
+                logger.debug("Going back to cell({})", cellIndex);
                 final int currentValue = grid.getCell(cellIndex)
                                              .getValue();
                 grid.getCell(cellIndex)
                     .removeFromAvailable(currentValue);
                 if (cellIndex < 0) {
-                    System.out.println("Grid initialization failed");
-                    throw new Exception("Error initializing grid");
+                    logger.error("Grid {} generation failed", grid.getId());
+                    throw new Exception("Error generation grid " + grid.getId());
                 }
             } else {
                 cellIndex++;
             }
         }
-        System.out.println("Grid initialized successfully");
-        System.out.println(grid.toString());
+        logger.info("Grid {} generation successfully", grid.getId());
+        logger.debug(grid);
         return grid;
     }
 
     private boolean setCellValue(final int cellIndex, final Grid grid) {
-        System.out.println("Setting value for cell(" + cellIndex + ")");
-        //System.out.println(grid.toString());
+        logger.debug("Setting value for cell({})", cellIndex);
         final Cell cell = grid.getCell(cellIndex);
         do {
             final Integer value = cell.getRandomAvailableValue();
             if (canUseValue(cell.getCellIndex(), grid, value)) {
                 cell.setValue(value);
-                System.out.println("cell(" + cellIndex + ") set value " + value);
+                logger.debug("cell({}) set value {}", cellIndex, value);
                 return true;
             } else {
                 cell.removeFromAvailable(value);
-                System.out.println("cell(" + cellIndex + ") discard value " + value);
+                logger.debug("cell({}) discard value {}", cellIndex, value);
             }
         } while (cell.hasAvailableValues());
 
-        System.out.println("cell(" + cellIndex + ") no available values left");
+        logger.debug("cell({}) no available values left", cellIndex);
         return false;
     }
 

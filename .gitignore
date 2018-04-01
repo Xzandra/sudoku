@@ -19,3 +19,6 @@
 */target/
 */out/
 */build/
+/target/
+/out/
+/build/

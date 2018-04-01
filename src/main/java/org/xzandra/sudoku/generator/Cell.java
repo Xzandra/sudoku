@@ -1,15 +1,17 @@
-package org.xzandra.sudoku.generator.model;
+package org.xzandra.sudoku.generator;
 
-import org.xzandra.sudoku.generator.RandomGenerator;
-import org.xzandra.sudoku.generator.SudokuUtils;
+import org.xzandra.sudoku.GridUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Sudoku cell.
  */
 public class Cell {
+    private static final int MIN_INDEX = 0;
+    private static Random random = new Random();
     private int cellIndex;
     private int row;
     private int column;
@@ -18,11 +20,15 @@ public class Cell {
     private List<Integer> availableValues;
 
     public Cell(final int cellIndex) {
-        this.cellIndex = cellIndex;
-        this.row = SudokuUtils.calculateRowIndex(cellIndex);
-        this.column = SudokuUtils.calculateColumnIndex(cellIndex);
-        this.square = SudokuUtils.calculateSquareIndex(row, column);
+        setIndices(cellIndex);
         initializeAvailableValues();
+    }
+
+    private void setIndices(final int cellIndex) {
+        this.cellIndex = cellIndex;
+        this.row = GridUtils.calculateRowIndex(cellIndex);
+        this.column = GridUtils.calculateColumnIndex(cellIndex);
+        this.square = GridUtils.calculateSquareIndex(row, column);
     }
 
     private void initializeAvailableValues() {
@@ -59,6 +65,12 @@ public class Cell {
         return value;
     }
 
+    /**
+     * Sets a valid value to the sell additionally removing it from available values.
+     * Nothing happens if the value if invalid.
+     *
+     * @param value - value to set.
+     */
     public void setValue(final Integer value) {
         if (this.isValidValue(value)) {
             this.value = value;
@@ -66,11 +78,19 @@ public class Cell {
         }
     }
 
+    /**
+     * Returns random available value for the cell.
+     * @return a random valid value for the sell or 0 if no valid values are available.
+     */
     public int getRandomAvailableValue() {
         if (!this.hasAvailableValues()) {
             return 0;
         }
-        int index = RandomGenerator.getIndex(this.availableValues.size());
+
+        int index = random.ints(MIN_INDEX, this.availableValues.size())
+                          .limit(1)
+                          .findFirst()
+                          .getAsInt();
         return this.availableValues.get(index);
     }
 
@@ -78,6 +98,11 @@ public class Cell {
         return !availableValues.isEmpty();
     }
 
+    /**
+     * Checks if the value is valid for the cell.
+     * @param value - value to check.
+     * @return true if there are available values and value to check is included, false otherwise.
+     */
     public boolean isValidValue(final Integer value) {
         return this.hasAvailableValues() && this.availableValues.contains(value);
     }
@@ -86,6 +111,9 @@ public class Cell {
         this.availableValues.remove(value);
     }
 
+    /**
+     * Sets the value of the cell to 0 and reset available values list.
+     */
     public void reset() {
         this.value = 0;
         initializeAvailableValues();
@@ -93,10 +121,6 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "Cell{" + row +
-                ", " + column +
-                ", '" + square + '\'' +
-                ", value=" + value +
-                '}';
+        return "Cell{" + row + ", " + column + ", " + square + ", value=" + value + '}';
     }
 }

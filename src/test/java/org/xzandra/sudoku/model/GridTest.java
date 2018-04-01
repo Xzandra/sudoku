@@ -1,10 +1,11 @@
-package org.xzandra.sudoku.generator;
+package org.xzandra.sudoku.model;
 
 import org.junit.jupiter.api.Test;
-import org.xzandra.sudoku.generator.model.Grid;
+import org.xzandra.sudoku.generator.Grid;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GridTest {
@@ -13,6 +14,14 @@ class GridTest {
         Grid grid = new Grid();
         assertEquals(0, grid.getCell(1)
                             .getValue());
+    }
+
+    @Test
+    void setRandomCellValue() {
+        Grid grid = new Grid();
+        grid.setRandomCellValue(0);
+        assertNotEquals(0, grid.getCell(0)
+                               .getValue());
     }
 
     @Test
@@ -54,7 +63,7 @@ class GridTest {
     }
 
     @Test
-    void isValidValueForBlock() {
+    void isValidValueForSquare() {
         Grid grid = new Grid();
         grid.setRandomCellValue(0);
         final int cellValue = grid.getCell(0)
@@ -64,7 +73,7 @@ class GridTest {
     }
 
     @Test
-    void isInvalidValueForBlock() {
+    void isInvalidValueForSquare() {
         Grid grid = new Grid();
         grid.setRandomCellValue(0);
         final int cellValue = grid.getCell(0)

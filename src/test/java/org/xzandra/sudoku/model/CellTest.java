@@ -1,7 +1,9 @@
-package org.xzandra.sudoku.generator;
+package org.xzandra.sudoku.model;
 
 import org.junit.jupiter.api.Test;
-import org.xzandra.sudoku.generator.model.Cell;
+import org.xzandra.sudoku.generator.Cell;
+
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CellTest {
     @Test
     void cellInitialization() {
-        Cell cell = new Cell(1);
+        Cell cell = new Cell(11);
         assertEquals(0, cell.getValue());
-        assertEquals(0, cell.getRow());
-        assertEquals(1, cell.getColumn());
+        assertEquals(1, cell.getRow());
+        assertEquals(2, cell.getColumn());
         assertEquals(0, cell.getSquare());
     }
 
@@ -25,11 +27,29 @@ class CellTest {
     }
 
     @Test
+    void hasNoAvailableValues() {
+        Cell cell = new Cell(1);
+        IntStream.range(1, 10)
+                 .forEach(value -> cell.setValue(value));
+        assertFalse(cell.hasAvailableValues());
+    }
+
+    @Test
     void getRandomAvailableValue() {
         Cell cell = new Cell(1);
         assertEquals(0, cell.getValue());
         final int randomAvailableValue = cell.getRandomAvailableValue();
         assertNotEquals(0, randomAvailableValue);
+    }
+
+    @Test
+    void getRandomAvailableValueWhenEveryValueUsed() {
+        Cell cell = new Cell(1);
+        assertEquals(0, cell.getValue());
+        IntStream.range(1, 10)
+                 .forEach(value -> cell.setValue(value));
+        final int randomAvailableValue = cell.getRandomAvailableValue();
+        assertEquals(0, randomAvailableValue);
     }
 
     @Test
