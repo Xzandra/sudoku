@@ -71,7 +71,8 @@ public class Grid {
                  .forEach(cellIndex -> {
                      final Cell cell = cells[cellIndex];
                      if (cell.getColumn() == GridUtils.GRID_SIZE - 1) {
-                         stringRepresentation.append(System.lineSeparator());
+                         stringRepresentation.append(cell.getValue())
+                                             .append(System.lineSeparator());
                      } else {
                          stringRepresentation.append(cell.getValue())
                                              .append("\t");

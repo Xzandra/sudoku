@@ -17,6 +17,7 @@ public class Cell {
         this.column = column;
         this.square = square;
         this.value = value;
+        this.removable = value == 0;
     }
 
     public int getIndex() {

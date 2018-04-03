@@ -2,7 +2,8 @@ package org.xzandra.sudoku.generator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xzandra.sudoku.GridUtils;
+
+import static org.xzandra.sudoku.common.GridConstants.TOTAL_CELL_SIZE;
 
 /**
  * Generator of the sudoku grid: backtracking algorithm.
@@ -16,7 +17,7 @@ public class BacktrackingGridGenerator {
         logger.info("Grid {} generation started", grid.getId());
 
         int cellIndex = 0;
-        while (cellIndex < GridUtils.TOTAL_CELL_SIZE) {
+        while (cellIndex < TOTAL_CELL_SIZE) {
             final boolean cellValueSet = setCellValue(cellIndex, grid);
             if (!cellValueSet) {
                 grid.getCell(cellIndex--)

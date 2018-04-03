@@ -2,6 +2,7 @@ package org.xzandra.sudoku.model;
 
 import org.xzandra.sudoku.GridUtils;
 import org.xzandra.sudoku.common.CellBuilder;
+import org.xzandra.sudoku.common.CellValuesUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,59 +15,43 @@ import static org.xzandra.sudoku.common.GridConstants.TOTAL_CELL_SIZE;
  * Sudoku grid.
  */
 public class Grid {
-    private final Cell[] cells = new Cell[TOTAL_CELL_SIZE];
-    private final List<Integer>[] cellValidValues = new ArrayList[TOTAL_CELL_SIZE];
     private final String id = UUID.randomUUID()
                                   .toString();
+    private Cell[] cells = new Cell[TOTAL_CELL_SIZE];
+    private List<Integer>[] cellValidValues = new ArrayList[TOTAL_CELL_SIZE];
 
     public Grid() {
         IntStream.range(0, TOTAL_CELL_SIZE)
                  .forEach(cellIndex -> {
                      cells[cellIndex] = new CellBuilder(cellIndex).build();
-                     cellValidValues[cellIndex] = new ArrayList();
+                     cellValidValues[cellIndex] = new CellValuesUtils().getDefaultValidValues();
                  });
+    }
+
+    public Grid(Cell[] cells, List<Integer>[] cellValidValues) {
+        this.cells = cells;
+        this.cellValidValues = cellValidValues;
     }
 
     public Cell getCell(final int index) {
         return cells[index];
     }
 
-    public List<Integer> getCellValidValues(final int index) {
-        return cellValidValues[index];
+    public void setCellValue(final int index, final int value) {
+        cells[index].setValue(value);
+        cellValidValues[index].remove(value);
     }
 
     public String getId() {
         return id;
     }
 
-    public boolean isValidValueForRow(final int rowIndex, final Integer value) {
-        for (Cell cell : cells) {
-            if (cell.getRow() == rowIndex && cell.getValue() == value) {
-                return false;
-            }
-        }
-
-        return true;
+    public List<Integer> getCellValidValues(final int index) {
+        return cellValidValues[index];
     }
 
-    public boolean isValidValueForColumn(final int columnIndex, final Integer value) {
-        for (Cell cell : cells) {
-            if (cell.getColumn() == columnIndex && cell.getValue() == value) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public boolean isValidValueForSquare(final int squareIndex, final Integer value) {
-        for (Cell cell : cells) {
-            if (cell.getSquare() == squareIndex && cell.getValue() == value) {
-                return false;
-            }
-        }
-
-        return true;
+    public List<Integer>[] getValidValues() {
+        return cellValidValues;
     }
 
     @Override
@@ -80,12 +65,17 @@ public class Grid {
                  .forEach(cellIndex -> {
                      final Cell cell = cells[cellIndex];
                      if (cell.getColumn() == GridUtils.GRID_SIZE - 1) {
-                         stringRepresentation.append(System.lineSeparator());
+                         stringRepresentation.append(cell.getValue())
+                                             .append(System.lineSeparator());
                      } else {
                          stringRepresentation.append(cell.getValue())
                                              .append("\t");
                      }
                  });
         return stringRepresentation.toString();
+    }
+
+    public Cell[] getCells() {
+        return cells;
     }
 }

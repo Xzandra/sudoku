@@ -3,6 +3,7 @@ package org.xzandra.sudoku.common;
 import org.apache.commons.lang3.Range;
 
 import static org.xzandra.sudoku.common.GridConstants.GRID_SIZE;
+import static org.xzandra.sudoku.common.GridConstants.SUDOKU_RANGE;
 import static org.xzandra.sudoku.common.GridConstants.TOTAL_CELL_SIZE;
 
 /**
@@ -12,11 +13,13 @@ public class RegionIndexBuilder {
     private static final Range<Integer> rangeZero = Range.between(0, 2);
     private static final Range<Integer> rangeOne = Range.between(3, 5);
     private static final Range<Integer> rangeTwo = Range.between(6, 8);
-    private static final Range<Integer> rangeSudokuRegion = Range.between(0, 8);
     private static final Range<Integer> rangeSudokuCell = Range.between(0, TOTAL_CELL_SIZE);
 
+    private RegionIndexBuilder() {
+    }
+
     public static int calculateSquareIndex(final int rowIndex, final int columnIndex) {
-        if (!rangeSudokuRegion.contains(rowIndex) || !rangeSudokuRegion.contains(columnIndex)) {
+        if (!SUDOKU_RANGE.contains(rowIndex) || !SUDOKU_RANGE.contains(columnIndex)) {
             throw new IllegalArgumentException("invalid row or column index for sudoku grid");
         }
 
