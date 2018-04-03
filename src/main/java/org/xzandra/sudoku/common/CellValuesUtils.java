@@ -4,17 +4,20 @@ import org.xzandra.sudoku.model.Cell;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.xzandra.sudoku.common.GridConstants.GRID_SIZE;
-import static org.xzandra.sudoku.common.GridConstants.SUDOKU_RANGE;
+import static org.xzandra.sudoku.common.GridConstants.SUDOKU_CELL_VALUE_RANGE;
 import static org.xzandra.sudoku.common.GridConstants.TOTAL_CELL_SIZE;
 
 /**
  * Helper methods for values of the sudoku cells.
  */
 public class CellValuesUtils {
+    private static Random random = new Random();
+
     public ArrayList<Integer> getDefaultValidValues() {
         final ArrayList<Integer> values = new ArrayList<>();
         IntStream.range(1, GRID_SIZE + 1)
@@ -45,7 +48,7 @@ public class CellValuesUtils {
     }
 
     public boolean isValidForRow(final int rowIndex, final Integer value, final Cell[] cells) {
-        if (!SUDOKU_RANGE.contains(value)) {
+        if (!SUDOKU_CELL_VALUE_RANGE.contains(value)) {
             return false;
         }
         for (Cell cell : cells) {
@@ -58,7 +61,7 @@ public class CellValuesUtils {
     }
 
     public boolean isValidForColumn(final int columnIndex, final Integer value, final Cell[] cells) {
-        if (!SUDOKU_RANGE.contains(value)) {
+        if (!SUDOKU_CELL_VALUE_RANGE.contains(value)) {
             return false;
         }
         for (Cell cell : cells) {
@@ -71,7 +74,7 @@ public class CellValuesUtils {
     }
 
     public boolean isValidForSquare(final int squareIndex, final Integer value, final Cell[] cells) {
-        if (!SUDOKU_RANGE.contains(value)) {
+        if (!SUDOKU_CELL_VALUE_RANGE.contains(value)) {
             return false;
         }
         for (Cell cell : cells) {
@@ -81,5 +84,33 @@ public class CellValuesUtils {
         }
 
         return true;
+    }
+
+    /**
+     * Returns random available value for the cell.
+     *
+     * @return a random valid value for the sell or 0 if no valid values are available.
+     */
+    public int getRandomAvailableValue(final List<Integer> availableValues) {
+        if (availableValues.isEmpty()) {
+            return 0;
+        }
+
+        int index = random.ints(0, availableValues.size())
+                          .limit(1)
+                          .findFirst()
+                          .getAsInt();
+        return availableValues.get(index);
+    }
+
+    /**
+     * Checks if the value is valid for specified cell.
+     *
+     * @return true if value can be set to the cell or false otherwise.
+     */
+    public boolean valueCanBeUsed(final int cellIndex, final Integer value, final Cell[] cells) {
+        final Cell cell = cells[cellIndex];
+        return isValidForSquare(cell.getSquare(), value, cells) && isValidForRow(cell.getRow(), value, cells) && isValidForColumn(cell
+                .getColumn(), value, cells);
     }
 }

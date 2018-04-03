@@ -15,12 +15,6 @@ repositories {
 }
 
 mainClassName = "org.xzandra.sudoku.SudokuMain"
-sourceSets {
-    main {
-        output.resourcesDir = file('target/bin')
-        java.outputDir = file('target/bin')
-    }
-}
 
 ext.junitJupiterVersion = '5.1.0'
 test {

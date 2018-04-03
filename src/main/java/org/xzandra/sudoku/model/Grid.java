@@ -19,12 +19,14 @@ public class Grid {
                                   .toString();
     private Cell[] cells = new Cell[TOTAL_CELL_SIZE];
     private List<Integer>[] cellValidValues = new ArrayList[TOTAL_CELL_SIZE];
+    private CellValuesUtils cellValuesUtils;
 
     public Grid() {
         IntStream.range(0, TOTAL_CELL_SIZE)
                  .forEach(cellIndex -> {
                      cells[cellIndex] = new CellBuilder(cellIndex).build();
-                     cellValidValues[cellIndex] = new CellValuesUtils().getDefaultValidValues();
+                     cellValuesUtils = new CellValuesUtils();
+                     cellValidValues[cellIndex] = cellValuesUtils.getDefaultValidValues();
                  });
     }
 
@@ -35,6 +37,10 @@ public class Grid {
 
     public Cell getCell(final int index) {
         return cells[index];
+    }
+
+    public Cell[] getCells() {
+        return cells;
     }
 
     public void setCellValue(final int index, final int value) {
@@ -52,6 +58,21 @@ public class Grid {
 
     public List<Integer>[] getValidValues() {
         return cellValidValues;
+    }
+
+    /**
+     * Sets the value of the cell to 0 and reset available values list.
+     */
+    public void resetCell(final int index) {
+        this.cells[index].setValue(0);
+        this.cellValidValues[index] = cellValuesUtils.getDefaultValidValues();
+    }
+
+    /**
+     * Remove value from available values for specified cell.
+     */
+    public void removeFromAvailableForCell(final int index, final Integer value) {
+        this.cellValidValues[index].remove(value);
     }
 
     @Override
@@ -73,9 +94,5 @@ public class Grid {
                      }
                  });
         return stringRepresentation.toString();
-    }
-
-    public Cell[] getCells() {
-        return cells;
     }
 }
