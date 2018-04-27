@@ -1,6 +1,5 @@
 package org.xzandra.sudoku.model;
 
-import org.xzandra.sudoku.GridUtils;
 import org.xzandra.sudoku.common.ValidValuesUtils;
 
 import java.util.Arrays;
@@ -58,6 +57,11 @@ public class SudokuGrid {
     }
 
     @Override
+    public int hashCode() {
+        return Arrays.hashCode(getCells());
+    }
+
+    @Override
     public boolean equals(final Object o) {
         if (this == o) {
             return true;
@@ -70,21 +74,16 @@ public class SudokuGrid {
     }
 
     @Override
-    public int hashCode() {
-        return Arrays.hashCode(getCells());
-    }
-
-    @Override
     public String toString() {
         StringBuilder stringRepresentation = new StringBuilder().append("Sudoku Grid ")
                                                                 .append(this.id)
                                                                 .append(":")
                                                                 .append(System.lineSeparator());
 
-        IntStream.range(0, GridUtils.TOTAL_CELL_SIZE)
+        IntStream.range(0, TOTAL_GRID_SIZE)
                  .forEach(cellIndex -> {
                      final SudokuCell cell = cells[cellIndex];
-                     if (cell.getColumn() == GridUtils.GRID_SIZE - 1) {
+                     if (cell.getColumn() == GRID_RANGE_SIZE - 1) {
                          stringRepresentation.append(cell.getValue())
                                              .append(System.lineSeparator());
                      } else {
