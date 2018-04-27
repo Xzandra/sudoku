@@ -1,11 +1,9 @@
-package org.xzandra.sudoku.solver;
+package org.xzandra.sudoku.common;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xzandra.sudoku.common.CellBuilder;
-import org.xzandra.sudoku.common.CellValuesUtils;
-import org.xzandra.sudoku.model.Cell;
-import org.xzandra.sudoku.model.Grid;
+import org.xzandra.sudoku.model.SudokuCell;
+import org.xzandra.sudoku.model.SudokuGrid;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,11 +30,11 @@ public class GridLoader {
      * @param filePath - URI to the csv file with sudoku grid.
      * @return Grid object.
      */
-    // TODO: 03.04.2018 see if more error handling is required
-    public Grid loadCsv(final URI filePath) {
+    public SudokuGrid loadGridFromCsv(final URI filePath) {
         logger.debug("Loading of file {} started", filePath);
-        Cell[] cells;
         Path path = Paths.get(filePath);
+
+        final SudokuGrid grid = new SudokuGrid();
 
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("UTF-8"))) {
@@ -46,18 +43,16 @@ public class GridLoader {
             final int[] cellValues = Arrays.stream(combinedString.split(VALUE_SEPARATOR))
                                            .mapToInt(Integer::parseInt)
                                            .toArray();
-            cells = IntStream.range(0, cellValues.length)
-                             .mapToObj(index -> new CellBuilder(index).value(cellValues[index])
-                                                                      .build())
-                             .toArray(size -> new Cell[cellValues.length]);
+            IntStream.range(0, cellValues.length)
+                     .forEach(index -> grid.setCell(index, new SudokuCell(cellValues[index], index)));
+            grid.updateCellAvailables();
         } catch (IOException e) {
             logger.debug("Exception while reading file " + path.toString(), e);
             throw new UncheckedIOException(e);
         }
 
-        final List<Integer>[] validValues = new CellValuesUtils().initializeValidValuesForCells(cells);
         logger.info("Loading of file {} finished successfully", filePath);
-        logger.debug("Loading of file {} finished successfully, {}", filePath, new Grid(cells, validValues));
-        return new Grid(cells, validValues);
+        logger.debug("Loading of file {} finished successfully, {}", filePath, grid);
+        return grid;
     }
 }
