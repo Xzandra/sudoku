@@ -2,7 +2,7 @@ package org.xzandra.sudoku.generator;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.xzandra.sudoku.model.SudokuGrid;
+import org.xzandra.sudoku.model.old.SudokuGrid;
 
 class BacktrackingGridGeneratorTest {
     @Test

@@ -1,7 +1,7 @@
 package org.xzandra.sudoku.common;
 
-import org.xzandra.sudoku.model.SudokuCell;
-import org.xzandra.sudoku.model.SudokuGrid;
+import org.xzandra.sudoku.model.old.SudokuCellImpl;
+import org.xzandra.sudoku.model.old.SudokuGrid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public final class ValidValuesUtils {
     }
 
     public static boolean isValidValue(final int index, final Integer value, final SudokuGrid grid) {
-        final SudokuCell cell = grid.getCell(index);
+        final SudokuCellImpl cell = grid.getCell(index);
         return cell.getValue() != value
                 && isValidForRow(cell.getRow(), value, grid)
                 && isValidForColumn(cell.getColumn(), value, grid)

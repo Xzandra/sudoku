@@ -1,4 +1,4 @@
-package org.xzandra.sudoku.model;
+package org.xzandra.sudoku.model.old;
 
 import org.xzandra.sudoku.common.ValidValuesUtils;
 
@@ -15,39 +15,44 @@ import static org.xzandra.sudoku.common.GridConstants.TOTAL_GRID_SIZE;
 public class SudokuGrid {
     private final String id = UUID.randomUUID()
                                   .toString();
-    private SudokuCell[] cells = new SudokuCell[TOTAL_GRID_SIZE];
+    private SudokuCellImpl[] cells = new SudokuCellImpl[TOTAL_GRID_SIZE];
 
     public SudokuGrid() {
         IntStream.range(0, TOTAL_GRID_SIZE)
-                 .forEach(cellIndex -> cells[cellIndex] = new SudokuCell(cellIndex));
+                 .forEach(cellIndex -> cells[cellIndex] = new SudokuCellImpl(cellIndex));
     }
 
     public String getId() {
         return id;
     }
 
-    public SudokuCell[] getCells() {
+    public SudokuCellImpl[] getCells() {
         return cells;
     }
 
-    public SudokuCell getCell(final int index) {
+    public SudokuCellImpl getCell(final int index) {
         return cells[index];
     }
 
-    public void setCell(final int index, final SudokuCell cell) {
+    public void setCell(final int index, final SudokuCellImpl cell) {
         this.cells[index] = cell;
     }
 
-    public void updateCellAvailables() {
+    public void updateCellPossibilities() {
         IntStream.range(0, TOTAL_GRID_SIZE)
                  .parallel()
-                 .forEach(index -> IntStream.range(1, GRID_RANGE_SIZE + 1)
-                                            .forEach(available -> {
-                                                if (!ValidValuesUtils.isValidValue(index, available, this)) {
-                                                    this.getCell(index)
-                                                        .removeAvailaible(available);
-                                                }
-                                            }));
+                 .forEach(cellIndex -> IntStream.range(0, this.getCell(cellIndex)
+                                                              .getPossibilities()
+                                                              .size())
+                                                .forEach(possibleValueIndex -> {
+                                                    final Integer possibleValue = this.getCell(cellIndex)
+                                                                                      .getPossibilities()
+                                                                                      .get(possibleValueIndex);
+                                                    if (!ValidValuesUtils.isValidValue(cellIndex, possibleValue, this)) {
+                                                        this.getCell(cellIndex)
+                                                            .removePossibility(possibleValue);
+                                                    }
+                                                }));
     }
 
     public boolean isSolved() {
@@ -75,14 +80,14 @@ public class SudokuGrid {
 
     @Override
     public String toString() {
-        StringBuilder stringRepresentation = new StringBuilder().append("Sudoku Grid ")
+        StringBuilder stringRepresentation = new StringBuilder().append("Sudoku SudokuBoard ")
                                                                 .append(this.id)
                                                                 .append(":")
                                                                 .append(System.lineSeparator());
 
         IntStream.range(0, TOTAL_GRID_SIZE)
                  .forEach(cellIndex -> {
-                     final SudokuCell cell = cells[cellIndex];
+                     final SudokuCellImpl cell = cells[cellIndex];
                      if (cell.getColumn() == GRID_RANGE_SIZE - 1) {
                          stringRepresentation.append(cell.getValue())
                                              .append(System.lineSeparator());

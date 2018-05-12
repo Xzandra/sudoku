@@ -2,7 +2,7 @@ package org.xzandra.sudoku.common;
 
 import org.apache.commons.lang3.Range;
 import org.junit.jupiter.api.Test;
-import org.xzandra.sudoku.model.SudokuGrid;
+import org.xzandra.sudoku.model.old.SudokuGrid;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;

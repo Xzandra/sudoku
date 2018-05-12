@@ -1,8 +1,8 @@
 package org.xzandra.sudoku.common;
 
 import org.junit.jupiter.api.Test;
-import org.xzandra.sudoku.model.SudokuCell;
-import org.xzandra.sudoku.model.SudokuGrid;
+import org.xzandra.sudoku.model.old.SudokuCellImpl;
+import org.xzandra.sudoku.model.old.SudokuGrid;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -19,8 +19,8 @@ class SudokuGridUtilsTest {
         final URI sudokuPath = getClass().getClassLoader()
                                          .getResource("sudokutables/loader/sudoku_table_full.csv")
                                          .toURI();
-        final SudokuGrid grid = new GridLoader().loadGridFromCsv(sudokuPath);
-        final SudokuCell cellWithMinAvailables = SudokuGridUtils.findCellWithMinAvailables(grid);
+        final SudokuGrid grid = new GridLoader().loadGrid(sudokuPath);
+        final SudokuCellImpl cellWithMinAvailables = SudokuGridUtils.findCellWithMinAvailables(grid);
         assertNull(cellWithMinAvailables);
     }
 
@@ -29,8 +29,8 @@ class SudokuGridUtilsTest {
         final URI sudokuPath = getClass().getClassLoader()
                                          .getResource("sudokutables/loader/sudoku_table_solvable.csv")
                                          .toURI();
-        final SudokuGrid grid = new GridLoader().loadGridFromCsv(sudokuPath);
-        final SudokuCell cellWithMinAvailables = SudokuGridUtils.findCellWithMinAvailables(grid);
+        final SudokuGrid grid = new GridLoader().loadGrid(sudokuPath);
+        final SudokuCellImpl cellWithMinAvailables = SudokuGridUtils.findCellWithMinAvailables(grid);
         assertEquals(5, cellWithMinAvailables.getIndex());
     }
 }

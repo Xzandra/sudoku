@@ -2,8 +2,9 @@ package org.xzandra.sudoku.common;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xzandra.sudoku.model.SudokuCell;
-import org.xzandra.sudoku.model.SudokuGrid;
+import org.xzandra.sudoku.model.SudokuBoard;
+import org.xzandra.sudoku.model.old.SudokuCellImpl;
+import org.xzandra.sudoku.model.old.SudokuGrid;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,31 +29,54 @@ public class GridLoader {
      * Load csv file with sudoku. The structure of the file - rows with sudoku cell values separated by comma.
      *
      * @param filePath - URI to the csv file with sudoku grid.
-     * @return Grid object.
+     * @return SudokuGrid object.
      */
-    public SudokuGrid loadGridFromCsv(final URI filePath) {
+    public SudokuGrid loadGrid(final URI filePath) {
+        final SudokuGrid grid = new SudokuGrid();
+        final int[] cellValues = loadCellsFromCsv(filePath);
+        IntStream.range(0, cellValues.length)
+                 .forEach(index -> grid.setCell(index, new SudokuCellImpl(index, cellValues[index])));
+        grid.updateCellPossibilities();
+
+        logger.debug("Loading of grid finished successfully, {}", grid);
+        return grid;
+    }
+
+    /**
+     * Load csv file with sudoku. The structure of the file - rows with sudoku cell values separated by comma.
+     *
+     * @param filePath - URI to the csv file with sudoku grid.
+     * @return SudokuBoard object.
+     */
+    public SudokuBoard loadBoard(final URI filePath) {
+        final int[] cellValues = loadCellsFromCsv(filePath);
+        final SudokuBoard sudokuBoard = new SudokuBoard(cellValues);
+        logger.debug("Loading of board finished successfully, {}", sudokuBoard);
+        return sudokuBoard;
+    }
+
+    /**
+     * Load csv file with sudoku. The structure of the file - rows with sudoku cell values separated by comma,
+     * where 0 means empty cell.
+     *
+     * @param filePath - URI to the csv file with sudoku grid.
+     * @return array of cell values.
+     */
+    public int[] loadCellsFromCsv(final URI filePath) {
         logger.debug("Loading of file {} started", filePath);
         Path path = Paths.get(filePath);
-
-        final SudokuGrid grid = new SudokuGrid();
 
         try (BufferedReader reader = Files.newBufferedReader(
                 path, Charset.forName("UTF-8"))) {
             final String combinedString = reader.lines()
                                                 .collect(Collectors.joining(VALUE_SEPARATOR));
-            final int[] cellValues = Arrays.stream(combinedString.split(VALUE_SEPARATOR))
-                                           .mapToInt(Integer::parseInt)
-                                           .toArray();
-            IntStream.range(0, cellValues.length)
-                     .forEach(index -> grid.setCell(index, new SudokuCell(cellValues[index], index)));
-            grid.updateCellAvailables();
+            logger.info("Loading of file {} finished successfully", filePath);
+            return Arrays.stream(combinedString.split(VALUE_SEPARATOR))
+                         .mapToInt(Integer::parseInt)
+                         .toArray();
         } catch (IOException e) {
             logger.debug("Exception while reading file " + path.toString(), e);
             throw new UncheckedIOException(e);
         }
-
-        logger.info("Loading of file {} finished successfully", filePath);
-        logger.debug("Loading of file {} finished successfully, {}", filePath, grid);
-        return grid;
     }
 }

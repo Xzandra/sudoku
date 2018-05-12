@@ -1,4 +1,4 @@
-package org.xzandra.sudoku.model;
+package org.xzandra.sudoku.model.old;
 
 import org.junit.jupiter.api.Test;
 
