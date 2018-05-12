@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 class SudokuGridSolverUtilsTest {
     @Test
@@ -57,7 +56,18 @@ class SudokuGridSolverUtilsTest {
     }
 
     @Test
-    void findCellWithMinOptions() {
-        fail("not implemented");
+    void findCellWithMinOptions() throws URISyntaxException {
+        final URI sudokuPath = SudokuGridSolverUtilsTest.class.getClassLoader()
+                                                              .getResource("sudokutables/solver/sudoku_min_options.csv")
+                                                              .toURI();
+        final int[] cells = new GridLoader().loadCellsFromCsv(sudokuPath);
+        final SudokuBoard sudokuBoard = new SudokuBoard(cells);
+        final SudokuCell cellWithMinOptions = SudokuGridSolverUtils.findCellWithMinOptions(sudokuBoard);
+        assertEquals(0, cellWithMinOptions.getRow());
+        assertEquals(4, cellWithMinOptions.getColumn());
+        final List<Integer> options = sudokuBoard.getOptions(cellWithMinOptions);
+        assertEquals(1, options.size());
+        assertEquals(3, options.get(0)
+                               .intValue());
     }
 }

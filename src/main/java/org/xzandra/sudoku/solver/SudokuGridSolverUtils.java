@@ -38,7 +38,7 @@ public final class SudokuGridSolverUtils {
     /**
      * Find cell with unique option because all other column or row in square have this value.
      *
-     * @param board- sudoku board
+     * @param board - sudoku board
      * @return - cell with set option value
      */
     public static SudokuCell findCellWithTwoOutOfThreeOption(final SudokuBoard board) {
@@ -76,7 +76,7 @@ public final class SudokuGridSolverUtils {
     /**
      * Find cell with unique option because in a square there is only one place that can take this particular value.
      *
-     * @param board- sudoku board
+     * @param board - sudoku board
      * @return - cell with set option value
      */
     public static SudokuCell findCellWithOnlySquareOption(final SudokuBoard board) {
@@ -99,8 +99,10 @@ public final class SudokuGridSolverUtils {
     }
 
     /**
-     * @param board
-     * @return
+     * Find unfilled cell with min options available.
+     *
+     * @param board - sudoku board
+     * @return - cell with  min options available
      */
     public static SudokuCell findCellWithMinOptions(final SudokuBoard board) {
         return board.getUnfilledCellsStream()
